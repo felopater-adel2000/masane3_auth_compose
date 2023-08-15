@@ -20,7 +20,7 @@ class AuthRepository @Inject constructor(val apiInterface: ApiInterface) : JobMa
 {
     private val TAG = "AuthRepository"
 
-    fun login(
+    suspend fun login(
         phone: String,
         password: String,
     ): LiveData<DataState<UserModel>>
@@ -60,7 +60,7 @@ class AuthRepository @Inject constructor(val apiInterface: ApiInterface) : JobMa
                 TODO("Not yet implemented")
             }
 
-            override fun createCall(): LiveData<GenericApiResponse<GenericResponse<UserModel>>> {
+            override suspend fun createCall(): LiveData<GenericApiResponse<GenericResponse<UserModel>>> {
                 Log.i("Felo", "create Call Api")
                 return apiInterface.login(phone, password)
             }

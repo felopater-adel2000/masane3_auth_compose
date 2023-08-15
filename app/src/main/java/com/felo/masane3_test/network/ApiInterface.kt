@@ -26,7 +26,7 @@ interface ApiInterface
 
     @POST("v2/auth/user/login")
     @FormUrlEncoded
-    fun login(
+   suspend fun login(
         @Field("phone") phone: String,
         @Field("password") password: String
     ): LiveData<GenericApiResponse<GenericResponse<UserModel>>>

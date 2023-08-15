@@ -1,37 +1,41 @@
 package com.felo.masane3_test.viewModel
 
-import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.felo.masane3_test.data.models.UserModel
 import com.felo.masane3_test.data.state.DataState
 import com.felo.masane3_test.data.state.LoginUIState
 import com.felo.masane3_test.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val authRepository: AuthRepository) : ViewModel()
-{
+class AuthViewModel @Inject constructor(private val authRepository: AuthRepository) : ViewModel() {
 
     val loginUIState = MutableStateFlow(LoginUIState())
 
+    val loginResponse = mutableStateOf(false)
 
-    var loginResponse: LiveData<DataState<UserModel>>? = null
 
     fun login(
         phone: String,
         password: String
-    ) {
-        loginResponse = authRepository.login(phone, password)
-    }
+    ) =
+        viewModelScope.launch {
+            authRepository.login(phone, password).observeForever {
+                loginResponse.value = it?.loading?.isLoading ?: false
+            }
+        }
 
 
-    fun updateMobileField(mobile: String)
-    {
+    fun updateMobileField(mobile: String) {
         loginUIState.update { it.copy(mobileField = mobile) }
     }
 

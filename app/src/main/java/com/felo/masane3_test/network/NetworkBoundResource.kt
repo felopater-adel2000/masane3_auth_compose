@@ -213,7 +213,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject>(
 
     abstract suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<ResponseObject>)
     abstract suspend fun createCacheRequest()
-    abstract fun createCall(): LiveData<GenericApiResponse<ResponseObject>>
+    abstract suspend fun createCall(): LiveData<GenericApiResponse<ResponseObject>>
     abstract fun setJob(job: Job)
     abstract fun loadFromCache(): LiveData<CacheObject>
     abstract suspend fun updateLocalDb(cacheObject: CacheObject?)

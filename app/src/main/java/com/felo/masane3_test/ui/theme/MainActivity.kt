@@ -85,8 +85,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        //viewModel.login("0100800900", "123456")
-
+        /*viewModel.loginResponse?.observe(this){
+            Log.d(TAG, "observe: ")
+        }*/
     }
 
 
@@ -96,7 +97,6 @@ class MainActivity : ComponentActivity() {
     fun LoginScreen()
     {
         val uiState by viewModel.loginUIState.collectAsState()
-        val loginResponseState = viewModel.loginResponse?.observeAsState()
         Scaffold(
             topBar = {
                 GenericAppBar(
@@ -222,13 +222,20 @@ class MainActivity : ComponentActivity() {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 LoginButton(
-                    modifier = Modifier.padding(horizontal = 14.dp).align(Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .padding(horizontal = 14.dp)
+                        .align(Alignment.CenterHorizontally)
                 ) {
                     Log.d(TAG, "LoginScreen: click Action")
-                    viewModel.login("0100800900", "123456")
+                    viewModel.login(uiState.mobileField, uiState.passwordField)
                 }
 
-                /*loginResponseState?.let {
+                val response by viewModel.loginResponse
+                if(response)
+                {
+                    Toast.makeText(this@MainActivity, "Success", Toast.LENGTH_LONG).show()
+                }
+            /*loginResponseState?.let {
                     it.error?.getContentIfNotHandled()?.let {stateError ->
                         Toast.makeText(this@MainActivity, stateError.response.message, Toast.LENGTH_LONG).show()
                     }
